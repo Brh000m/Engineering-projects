@@ -1,0 +1,113 @@
+
+
+
+#include <Servo.h> 
+
+Servo Servo1;
+
+int IRSensor1 = 0; // connect ir sensor to arduino pin 2
+int IRSensor2 = 1; // conect Led to arduino pin 13
+int DCMOTOr1 = 30;
+int SERVO = 32;
+int PUMP = 34;
+int DCMOTOR2 = 36;
+int AIR = 38;
+
+
+// stepper
+const int dirPin = 40;
+const int stepPin = 42;
+//const int stepsPerRevolution = 1000;
+
+
+void setup() 
+{
+  pinMode (IRSensor1, INPUT); // sensor pin INPUT
+  pinMode (IRSensor2, INPUT); // Led pin OUTPUT
+  pinMode (DCMOTOr1, OUTPUT);
+  Servo1.attach(SERVO); 
+ // pinMode (SERVO, OUTPUT);
+  pinMode (PUMP, OUTPUT);
+ // pinMode (STEPR, OUTPUT);
+   pinMode(stepPin, OUTPUT);
+   pinMode(dirPin, OUTPUT);
+   
+  pinMode (DCMOTOR2, OUTPUT);
+  pinMode (AIR, OUTPUT);
+  
+}
+
+void loop()
+{
+  int statusSensor1 = digitalRead (IRSensor1);
+  int statusSensor2 = digitalRead (IRSensor2);
+
+  digitalWrite(DCMOTOr1, HIGH);
+   // delay(3000);
+                                               //    int statusSensor11=0;
+  if (statusSensor1 == 0){
+    digitalWrite(DCMOTOr1, LOW); // LED LOW
+    Servo1.write(180);  
+    // digitalWrite(SERVO, HIGH);
+     digitalWrite(PUMP, HIGH); 
+
+     digitalWrite(PUMP, LOW);
+    // digitalWrite(STEPR, HIGH);
+    
+    int stepsPerRevolution1=15;
+     digitalWrite(dirPin, LOW);
+      for(int x = 0; x < stepsPerRevolution1; x++)
+  {
+    
+    digitalWrite(stepPin, HIGH);
+    delayMicroseconds(500);
+    digitalWrite(stepPin, LOW);
+    delayMicroseconds(500);
+  }
+  
+    // digitalWrite(DCMOTOr1, HIGH);
+    // Servo1.write(0);
+  }
+                                                                             //int statusSensor21=0;
+  if (statusSensor2 == 1){
+    
+    digitalWrite(stepPin, LOW);// stop stepper motor
+    
+    digitalWrite(DCMOTOr1, LOW);
+    //digitalWrite(STEPR, LOW);
+    //digitalWrite(stepPin, LOW);
+    digitalWrite(AIR, HIGH);
+
+    digitalWrite(AIR, LOW);
+    digitalWrite(DCMOTOR2, HIGH);
+
+    digitalWrite(DCMOTOR2, LOW);
+    
+   int stepsPerRevolution2=13;
+    digitalWrite(dirPin, LOW);
+      for(int x = 0; x < stepsPerRevolution2; x++)
+  {
+    digitalWrite(stepPin, HIGH);
+    delayMicroseconds(500);
+    digitalWrite(stepPin, LOW);
+    delayMicroseconds(500);
+  }
+  Servo1.write(0);
+
+  
+   digitalWrite(dirPin, HIGH);
+  int stepsPerRevolution3=28;
+      for(int x = 0; x < stepsPerRevolution3; x++)
+  {
+    
+    digitalWrite(stepPin, HIGH);
+    delayMicroseconds(500);
+    digitalWrite(stepPin, LOW);
+    delayMicroseconds(500);
+  }
+    //digitalWrite(STEPR, HIGH);
+    
+    }
+  
+  
+}

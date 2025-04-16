@@ -1,0 +1,118 @@
+
+
+
+#include <Servo.h>  // تعريف ب مكتبه servo 
+
+Servo Servo1; // ربط servo في الاردوينو 
+
+int IRSensor1 =12; // تعريف المدخل في الاردوينو
+int IRSensor2 = 13; // تعريف المدخل في الاردوينو
+int DCMOTOr1 = 2;// تعريف المدخل في الاردوينو
+int SERVO = 3; // تعريف المدخل في الاردوينو
+int PUMP = 4; // تعريف المدخل في الاردوينو
+int DCMOTOR2 = 5; // تعريف المدخل في الاردوينو
+int AIR = 7; // تعريف المدخل في الاردوينو
+
+
+// stepper
+const int dirPin = 10; // تعريف المدخل في الاردوينو
+const int stepPin = 11; // تعريف المدخل في الاردوينو
+//const int stepsPerRevolution = 1000;
+
+
+void setup() // كل الاوامر دخل void  سيتم تنفيذها مره واحده عند بدايه الكود
+{
+  pinMode (IRSensor1, INPUT); // sensor pin INPUT
+  pinMode (IRSensor2, INPUT); // Led pin OUTPUT
+  pinMode (DCMOTOr1, OUTPUT);//تهيئه الطرف ليكون مخرج
+  Servo1.attach(SERVO); 
+ // pinMode (SERVO, OUTPUT);
+  pinMode (PUMP, OUTPUT);//تهيئه الطرف ليكون مخرج
+ // pinMode (STEPR, OUTPUT);
+   pinMode(stepPin, OUTPUT);//تهيئه الطرف ليكون مخرج
+   pinMode(dirPin, OUTPUT);//تهيئه الطرف ليكون مخرج
+   
+  pinMode (DCMOTOR2, OUTPUT);//تهيئه الطرف ليكون مخرج
+  pinMode (AIR, OUTPUT);//تهيئه الطرف ليكون مخرج
+  
+}
+
+void loop() // كل الاوامر دخل void  سيتم تنفيذها بشكل متكرر مادام الاردوينو شغال
+{
+  int statusSensor1 = digitalRead (IRSensor1);//يقراء الحاله الرقميه
+  int statusSensor2 = digitalRead (IRSensor2);
+
+  digitalWrite(DCMOTOr1, HIGH);
+   //delay(3000);
+     
+                                              
+  if (statusSensor1 == 0) // عندما يتحسس الحساس الاول 
+  {
+    digitalWrite(DCMOTOr1, LOW); // يتم ايقاف DC motor 1    
+    Servo1.write(180); // يتم تشغيل servo و  الدوران 180 درجه  
+    // digitalWrite(SERVO, HIGH);
+     digitalWrite(PUMP, HIGH);  // يتم اخراج 5v و تشغيل مضخه الما
+     delay(3000);        //تستخدم delay لتاخير الزمن فتره محدده
+     digitalWrite(PUMP, LOW);  // يخرج 0v و اغلاق مضخه الماء
+    // digitalWrite(STEPR, HIGH);
+    
+    int stepsPerRevolution1=15000; // في هاذي الحاله يتم تشغيل steper
+     digitalWrite(dirPin,HIGH);
+      for(int x = 0; x < stepsPerRevolution1; x++)
+  {
+    
+    digitalWrite(stepPin, LOW); // يخرج 0v
+    delayMicroseconds(500); // تاخير زمن بالميكرو ثانيه
+    digitalWrite(stepPin, HIGH); // يخرج 0v
+    delayMicroseconds(500);// تاخير زمن بالميكرو ثانيه
+  }
+  
+    // digitalWrite(DCMOTOr1, HIGH);
+    // Servo1.write(0);
+  }
+                                                                             //int statusSensor21=0;
+  if (statusSensor2 == 0) //  عندما يتم تحسس الحساس الثاني 
+  {
+    
+    digitalWrite(stepPin, LOW);// stop stepper motor
+    delay(3000);
+    digitalWrite(DCMOTOr1, LOW); // يتم ايقاف  DC motor 1
+    //digitalWrite(STEPR, LOW);
+    //digitalWrite(stepPin, LOW);
+    digitalWrite(AIR, HIGH); // يتم تشغيل مضخه الهواء
+    delay(3000); // يتم تشغيل كضخه الهواء زمن قدره 3 ثواني
+    digitalWrite(AIR, LOW); // ييتم اغلاق مضخه الهواء 
+    digitalWrite(DCMOTOR2, HIGH);// يتم تشغيل DC motor 2
+    delay(3000); //يتم تشغيل DC motor2  زمن قدره 3 ثواني
+    digitalWrite(DCMOTOR2, LOW); // يتم اغلاق DC motor2 
+    
+   int stepsPerRevolution2=12000; // التحكم في زمن الدوران  ال steper 
+    digitalWrite(dirPin, HIGH); //  نقوم بتشغيل ال steper  من بعد عمليه (الغطاء) 
+      for(int x = 0; x < stepsPerRevolution2; x++) // التحكم في زمن الدوران 
+  {
+    digitalWrite(stepPin,LOW);
+    delayMicroseconds(500);
+    digitalWrite(stepPin, HIGH);
+    delayMicroseconds(500);
+  }
+  Servo1.write(0); // يتم ارجاع فتح الى حاله الطبيعيه 
+
+  
+   digitalWrite(dirPin, LOW);
+  int stepsPerRevolution3=23000;
+      for(int x = 0; x < stepsPerRevolution3; x++)  // في هاذي الحاله يتم ارجع حركه steper  من النهايه الى البدايه 
+  {
+    
+    digitalWrite(stepPin, HIGH);
+    delayMicroseconds(500);
+    
+    digitalWrite(stepPin, LOW);
+    delayMicroseconds(500);
+  }
+    //digitalWrite(STEPR, HIGH);
+    
+    }
+  
+  
+}
+
